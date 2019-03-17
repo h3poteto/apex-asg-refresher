@@ -1,0 +1,7 @@
+{
+  "target_asgs": [
+    "master-ap-northeast-1a.masters.base-prd.cluster.k8s.local",
+    "master-ap-northeast-1c.masters.base-prd.cluster.k8s.local",
+    "master-ap-northeast-1d.masters.base-prd.cluster.k8s.local"
+  ]
+}

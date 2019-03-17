@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type TargetEvent struct {
-	TargetASG string `json:"target_asg"`
+	TargetASGs []string `json:"target_asgs"`
 }
 
 func handler(ctx context.Context, event TargetEvent) error {
@@ -18,14 +19,25 @@ func handler(ctx context.Context, event TargetEvent) error {
 	}
 	log.Info(string(jsonBytes))
 
+	if len(event.TargetASGs) < 1 {
+		return errors.New("Target asg is required")
+	}
+
 	asg := NewASG()
-	group, err := asg.GetASG(event.TargetASG)
+	err = asg.CheckGroupStatuses(event.TargetASGs)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+
+	group, err := asg.GetASG(event.TargetASGs[0])
 	if err != nil {
 		return err
 	}
 	log.Info(*group.AutoScalingGroupName)
-	err = asg.ScaleUp(group, 1)
+	err = asg.TerminateOldestInstance(group)
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 	return nil
