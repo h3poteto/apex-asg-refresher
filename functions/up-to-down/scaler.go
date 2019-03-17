@@ -39,8 +39,14 @@ func (a *ASG) GetASG(name string) (*autoscaling.Group, error) {
 	return output.AutoScalingGroups[0], nil
 }
 
-func (a *ASG) ScaleUp(target *autoscaling.Group) error {
-	return nil
+func (a *ASG) ScaleUp(target *autoscaling.Group, numberOfIncrease int64) error {
+	capacity := *target.DesiredCapacity + numberOfIncrease
+	input := &autoscaling.UpdateAutoScalingGroupInput{
+		AutoScalingGroupName: target.AutoScalingGroupName,
+		DesiredCapacity:      aws.Int64(capacity),
+	}
+	_, err := a.client.UpdateAutoScalingGroup(input)
+	return err
 }
 
 func (a *ASG) ScaleDown(target *autoscaling.Group) error {

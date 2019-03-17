@@ -24,5 +24,9 @@ func handler(ctx context.Context, event TargetEvent) error {
 		return err
 	}
 	log.Info(*group.AutoScalingGroupName)
+	err = asg.ScaleUp(group, 1)
+	if err != nil {
+		return err
+	}
 	return nil
 }
