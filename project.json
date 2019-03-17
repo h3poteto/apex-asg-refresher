@@ -1,0 +1,8 @@
+{
+  "name": "asg-refresher",
+  "description": "",
+  "memory": 128,
+  "timeout": 900,
+  "role": "arn:aws:iam::564677439943:role/asg-refresher-role",
+  "environment": {}
+}
